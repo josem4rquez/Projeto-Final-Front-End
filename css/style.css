@@ -1098,6 +1098,49 @@ a:hover {
    Escreva aqui: input[type="email"], :focus, ::placeholder e a classe .erro.
    Cores de erro: var(--color-error), sempre com mensagem escrita.
    ========================================================================= */
+  .contato {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-width: 480px;
+  }
+
+  .contato input,
+  .contato textarea {
+    padding: var(--space-sm);
+    border: 1px solid var(--color-secondary);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+  }
+
+  .contato textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  /* seletor de atributo: só o campo de e-mail */
+  input[type="email"] {
+    text-transform: lowercase;
+  }
+
+  .contato input:focus,
+  .contato textarea:focus {
+    border-color: var(--color-primary);
+  }
+
+  .contato ::placeholder {
+    color: var(--color-secondary);
+    font-style: italic;
+  }
+
+  .contato .erro {
+    border-color: var(--color-error);
+  }
+
+  .contato button {
+    align-self: flex-start;
+    margin-top: var(--space-sm);
+  }
 
 /* ===== RESPONSIVO (Pessoa 1) ============================================
    Pontos de quebra do design system: < 640px, 640–1023px e >= 1024px.
