@@ -3,7 +3,6 @@
 // Cada pessoa mexe só no seu bloco.
 // ==========================================================================
 
-
 // ===== MODO ESCURO (Pessoa 1) =====
 const CHAVE_TEMA = "tema";
 
@@ -52,13 +51,44 @@ document.addEventListener("DOMContentLoaded", () => {
   atualizarBotaoTema(botao);
 });
 
-
 // ===== FAVORITOS (Pessoa 3) =====
-// Contrato combinado com a Pessoa 2:
-//   chave no localStorage: "favoritos"
-//   pokemon: { id: 25, nome: "pikachu", tipo: "electric", peso: 60, altura: 4, imagem: "https://..." }
-//
-//   lerFavoritos()              devolve o array salvo (ou [])
-//   salvarFavoritos(lista)      grava o array no localStorage
-//   alternarFavorito(pokemon)   marca ou desmarca e salva
-//   ehFavorito(id)              devolve true ou false para pintar o botão
+// Lê os favoritos salvos no navegador.
+function lerFavoritos() {
+  try {
+    const dados = localStorage.getItem("favoritos");
+    const favoritos = dados ? JSON.parse(dados) : [];
+    return Array.isArray(favoritos) ? favoritos : [];
+  } catch (erro) {
+    return [];
+  }
+}
+
+// Salva a lista completa de favoritos no localStorage.
+function salvarFavoritos(lista) {
+  try {
+    localStorage.setItem("favoritos", JSON.stringify(lista));
+  } catch (erro) {
+    // Se o navegador bloquear o armazenamento, o restante do site continua funcionando.
+  }
+}
+
+// Adiciona o Pokémon se ainda não for favorito ou remove se já estiver salvo.
+function alternarFavorito(pokemon) {
+  const favoritos = lerFavoritos();
+  const indice = favoritos.findIndex((item) => item.id === pokemon.id);
+
+  if (indice !== -1) {
+    favoritos.splice(indice, 1);
+  } else {
+    favoritos.push(pokemon);
+  }
+
+  salvarFavoritos(favoritos);
+  return favoritos;
+}
+
+// Informa se um Pokémon já está na lista de favoritos.
+function ehFavorito(id) {
+  const favoritos = lerFavoritos();
+  return favoritos.find((pokemon) => pokemon.id === id) !== undefined;
+}

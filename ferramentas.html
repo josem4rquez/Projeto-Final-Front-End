@@ -1,49 +1,195 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ferramentas | Guia de Campo</title>
-  <meta name="description" content="Calculadora e médias de peso e altura dos Pokémon favoritos.">
-  <link rel="icon" href="data:,">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&amp;display=swap">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="scripts/script.js" defer></script>
-  <script src="scripts/explorar.js" defer></script>
-</head>
-<body>
-  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ferramentas | Guia de Campo</title>
+    <meta
+      name="description"
+      content="Calculadora e médias de peso e altura dos Pokémon favoritos."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&amp;display=swap"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="scripts/script.js" defer></script>
+    <script src="scripts/explorar.js" defer></script>
+  </head>
+  <body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="cabecalho">
-    <div class="conteiner cabecalho__interno">
-      <a class="cabecalho__marca" href="index.html">Guia de Campo</a>
-      <div class="cabecalho__acoes">
-        <nav class="menu" aria-label="Principal">
-          <a href="index.html">Início</a>
-          <a href="explorar.html">Explorar</a>
-          <a href="ferramentas.html" aria-current="page">Ferramentas</a>
-          <a href="contato.html">Contato</a>
-        </nav>
-        <button class="botao botao--secundario" id="btn-modo-escuro" type="button" aria-pressed="false">
-          <svg class="icone icone--inline marca" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Modo escuro
-        </button>
+    <header class="cabecalho">
+      <div class="conteiner cabecalho__interno">
+        <a class="cabecalho__marca" href="index.html">Guia de Campo</a>
+        <div class="cabecalho__acoes">
+          <nav class="menu" aria-label="Principal">
+            <a href="index.html">Início</a>
+            <a href="explorar.html">Explorar</a>
+            <a href="ferramentas.html" aria-current="page">Ferramentas</a>
+            <a href="contato.html">Contato</a>
+          </nav>
+          <button
+            class="botao botao--secundario"
+            id="btn-modo-escuro"
+            type="button"
+            aria-pressed="false"
+          >
+            <svg
+              class="icone icone--inline marca"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            Modo escuro
+          </button>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main id="conteudo" class="conteiner conteudo">
-    <h1 class="titulo-lg">Ferramentas</h1>
-    <!-- PESSOA 3: calculadora e dados dos favoritos -->
-  </main>
+    <main id="conteudo" class="conteiner conteudo">
+      <h1 class="titulo-lg">Ferramentas</h1>
+      <p class="corpo-lg ferramentas__intro">
+        Calcule operações e consulte as medidas dos Pokémon que você salvou no
+        seu catálogo.
+      </p>
 
-  <footer class="rodape">
-    <div class="conteiner rodape__interno">
-      <p class="nota">Dados: PokéAPI (pokeapi.co). Pokémon e seus nomes são marcas de Nintendo, Creatures Inc. e GAME FREAK. Projeto de fã, sem fins lucrativos.</p>
-      <p class="nota">Projeto final de Front-End, RA 3.</p>
-    </div>
-  </footer>
-</body>
+      <section class="ferramentas__secao" aria-labelledby="titulo-calculadora">
+        <p class="rotulo">TDE 01 · Operações</p>
+        <h2 class="titulo-md" id="titulo-calculadora">Calculadora</h2>
+
+        <div class="ferramentas__calculadora">
+          <div class="ferramentas__campo">
+            <label class="rotulo" for="numero1">Primeiro número</label>
+            <input
+              class="ferramentas__entrada"
+              id="numero1"
+              type="number"
+              step="any"
+              inputmode="decimal"
+              placeholder="Ex.: 12"
+            />
+          </div>
+
+          <div class="ferramentas__campo">
+            <label class="rotulo" for="numero2">Segundo número</label>
+            <input
+              class="ferramentas__entrada"
+              id="numero2"
+              type="number"
+              step="any"
+              inputmode="decimal"
+              placeholder="Ex.: 4"
+            />
+          </div>
+
+          <div class="ferramentas__campo">
+            <label class="rotulo" for="operacao">Operação</label>
+            <select class="ferramentas__entrada" id="operacao">
+              <option value="somar">Adição (+)</option>
+              <option value="subtrair">Subtração (−)</option>
+              <option value="multiplicar">Multiplicação (×)</option>
+              <option value="dividir">Divisão (÷)</option>
+            </select>
+          </div>
+
+          <div class="ferramentas__acao">
+            <button
+              class="botao botao--primario"
+              id="btn-calcular"
+              type="button"
+            >
+              Calcular
+            </button>
+          </div>
+        </div>
+
+        <p
+          class="ferramentas__resultado"
+          id="resultado-calculo"
+          aria-live="polite"
+          role="status"
+        >
+          O resultado aparecerá aqui.
+        </p>
+      </section>
+
+      <section class="ferramentas__secao" aria-labelledby="titulo-estatisticas">
+        <p class="rotulo">TDE 01 · Dados salvos</p>
+        <h2 class="titulo-md" id="titulo-estatisticas">
+          Estatísticas dos favoritos
+        </h2>
+        <p class="ferramentas__descricao">
+          As médias consideram todos os Pokémon salvos. O peso e a altura são
+          apresentados em quilogramas e metros.
+        </p>
+
+        <dl class="ferramentas__medias" aria-live="polite">
+          <div class="ferramentas__medida">
+            <dt class="rotulo">Média de peso</dt>
+            <dd class="dado-lg" id="media-peso">—</dd>
+          </div>
+          <div class="ferramentas__medida">
+            <dt class="rotulo">Média de altura</dt>
+            <dd class="dado-lg" id="media-altura">—</dd>
+          </div>
+        </dl>
+
+        <div class="ferramentas__filtros">
+          <div>
+            <h3 class="titulo-sm">Filtrar por peso</h3>
+            <p class="nota">Exibe somente Pokémon com mais de 10 kg.</p>
+          </div>
+          <div class="ferramentas__botoes">
+            <button
+              class="botao botao--secundario"
+              id="btn-filtro"
+              type="button"
+              aria-pressed="false"
+            >
+              Mais de 10 kg
+            </button>
+            <button
+              class="botao botao--secundario"
+              id="btn-todos"
+              type="button"
+              aria-pressed="true"
+            >
+              Mostrar todos
+            </button>
+          </div>
+        </div>
+
+        <p
+          class="dado-sm ferramentas__contador"
+          id="contador-favoritos"
+          aria-live="polite"
+        ></p>
+        <div
+          class="ferramentas__lista"
+          id="lista-favoritos"
+          aria-live="polite"
+        ></div>
+        <p class="ferramentas__vazio" id="mensagem-favoritos">
+          Você ainda não adicionou Pokémon aos favoritos. Acesse Explorar para
+          salvar suas espécies.
+        </p>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="conteiner rodape__interno">
+        <p class="nota">
+          Dados: PokéAPI (pokeapi.co). Pokémon e seus nomes são marcas de
+          Nintendo, Creatures Inc. e GAME FREAK. Projeto de fã, sem fins
+          lucrativos.
+        </p>
+        <p class="nota">Projeto final de Front-End, RA 3.</p>
+      </div>
+    </footer>
+  </body>
 </html>
