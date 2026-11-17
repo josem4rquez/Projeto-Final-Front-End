@@ -514,18 +514,23 @@ a:hover { color: var(--color-primary-strong); }
 .mensagem-erro.explorar__erro { color: var(--color-error); }
 .explorar__erro-corpo { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-md); }
 
-/* Grade dos cartões: 3 colunas no desktop. Para mudar o número de colunas, troque o 3. */
+/* Grade dos cartões: 3 colunas no desktop. Para mudar o número de colunas, troque o 3.
+   Espaço entre dois cartões = margem + gap + margem = 8 + 8 + 8 = 24px.
+   A margem negativa do container desfaz a margem dos cartões nas bordas,
+   para o primeiro cartão continuar alinhado com o título da seção. */
 .lista-cartoes {
+  --margem-cartao: var(--space-sm);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-lg);
+  gap: var(--margem-cartao);
+  margin: calc(-1 * var(--margem-cartao));
 }
 
 /* Cartão de um Pokémon */
 .cartao {
   display: flex; flex-direction: column; gap: var(--space-sm);
-  width: 100%;
-  margin: 0;                       /* o espaço entre cartões vem do gap da grade */
+  width: calc(100% - 2 * var(--margem-cartao));  /* a célula inteira menos as margens laterais */
+  margin: var(--margem-cartao);
   padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-none);
