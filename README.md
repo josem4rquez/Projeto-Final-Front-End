@@ -8,7 +8,8 @@
 O projeto é uma aplicação web que permite explorar espécies de Pokémon e
 consultar informações como número, nome, tipo, peso, altura e imagem
 oficial. O site apresenta os Pokémon como espécies registradas em um guia de campo,
-reunindo suas principais informações em cartões.
+reunindo suas principais informações em cartões. A página Explorar permite buscar
+pelo nome e filtrar por tags de tipo, categoria (lendário, mítico e bebê) e geração.
 
 Além da consulta às espécies, o site oferece gerenciamento de favoritos,
 ferramentas para cálculos e estatísticas, formulário de contato e
@@ -19,7 +20,7 @@ alternância entre modo claro e escuro.
 | Integrante                        | Responsabilidades                                                                                                                                    |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Emily Maria Luciani**           | Estrutura base do site, criação dos quatro arquivos HTML, página inicial, estrutura visual compartilhada, modo escuro e organização do README final. |
-| **José Eduardo Bernardi Marques** | Página Explorar, integração GET com a PokéAPI, carregamento dos Pokémon, criação dos cartões e busca em tempo real.                                  |
+| **José Eduardo Bernardi Marques** | Página Explorar, integração GET com a PokéAPI, carregamento dos Pokémon, criação dos cartões, busca em tempo real e tags de filtro.                  |
 | **Erika Yumi Kanashiro**          | Sistema de favoritos integrado ao `localStorage`, página Ferramentas, calculadora, médias de peso e altura e filtro de Pokémon por peso.             |
 | **Eduardo Elias Lopes**           | Página Contato, formulário, integração POST, validação dos campos e relatório de debugging do TDE 02.                                                |
 
@@ -59,6 +60,27 @@ individual retornada
 pelo primeiro endpoint.
 
 ---
+
+**Tags de filtro da página Explorar.** As tags se combinam com a busca por
+nome (só passa quem atende a todos os filtros):
+
+- **Tipo:** até 2 tags, e o Pokémon precisa ter todos os tipos marcados
+  (Fogo + Voador mostra o Charizard). A lista vem de
+  `https://pokeapi.co/api/v2/type/{nome}` (GET) e fica guardada depois da
+  primeira consulta, então marcar o mesmo tipo de novo não chama a API.
+- **Categoria:** Lendário, Mítico e Bebê (vale estar em qualquer uma das
+  marcadas). A PokéAPI não tem uma lista pronta dessas categorias: elas só
+  aparecem nos campos `is_legendary`, `is_mythical` e `is_baby` de cada
+  espécie (`/pokemon-species/{id}`), o que seriam 1.025 chamadas. Por isso
+  os números dessas espécies foram copiados desses campos uma única vez, em
+  17/11/2026, para as constantes `CATEGORIAS` do `scripts/explorar.js`. Se a
+  API ganhar espécies novas, essas listas precisam ser atualizadas.
+- **Geração:** escolha única, de I (Kanto) a IX (Paldea). Cada geração é uma
+  faixa seguida de números (a Geração I vai de 1 a 151), guardada na constante
+  `GERACOES`.
+- Categoria e geração valem para espécies. As formas alternativas (Mega,
+  Gigantamax e regionais, com número acima de 10000) só aparecem na busca por
+  nome ou pelo filtro de tipo.
 
 **Arquivo responsável:** `scripts/explorar.js`
 
@@ -301,6 +323,11 @@ possa utilizar os dados sem realizar uma nova consulta à API.
   imagem: "https://..."
 }
 ```
+
+Os cartões da página Explorar também criam o campo `tipos` (por exemplo,
+`["fire", "flying"]`), com todos os tipos do Pokémon, que é salvo junto no
+favorito. O campo `tipo` continua sendo só o primeiro tipo, e a página
+Ferramentas não depende do `tipos`.
 
 A chave utilizada no `localStorage` é `"favoritos"`.
 

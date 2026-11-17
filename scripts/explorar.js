@@ -3,6 +3,7 @@
 // Busca na PokéAPI a lista com todos os Pokémon (só nomes) e mostra os cartões
 // aos poucos: os detalhes (tipo, peso, altura, sprite) são pedidos só dos Pokémon
 // que aparecem na tela. A busca por nome vale para todos eles.
+// As tags (tipo, categoria e geração) filtram essa mesma lista e se combinam com a busca.
 
 // ===== CONSTANTES =====
 // Endereço da API: lista com todos os Pokémon (só nome e url de cada um).
@@ -39,13 +40,80 @@ const FORMATADOR_DECIMAL = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 1
 });
 
+// ===== TAGS (FILTROS) =====
+// Endereço dos Pokémon de um tipo: .../type/fire devolve só os Pokémon do tipo fogo.
+const TIPO_URL = "https://pokeapi.co/api/v2/type/";
+
+// Nenhum Pokémon tem mais de 2 tipos, então marcar um terceiro nunca acharia nada.
+const MAXIMO_DE_TIPOS = 2;
+
+// Gerações. Cada uma ocupa uma faixa seguida de números: do primeiro ao último.
+const GERACOES = [
+  { numero: 1, rotulo: "I · Kanto", primeiro: 1, ultimo: 151 },
+  { numero: 2, rotulo: "II · Johto", primeiro: 152, ultimo: 251 },
+  { numero: 3, rotulo: "III · Hoenn", primeiro: 252, ultimo: 386 },
+  { numero: 4, rotulo: "IV · Sinnoh", primeiro: 387, ultimo: 493 },
+  { numero: 5, rotulo: "V · Unova", primeiro: 494, ultimo: 649 },
+  { numero: 6, rotulo: "VI · Kalos", primeiro: 650, ultimo: 721 },
+  { numero: 7, rotulo: "VII · Alola", primeiro: 722, ultimo: 809 },
+  { numero: 8, rotulo: "VIII · Galar", primeiro: 810, ultimo: 905 },
+  { numero: 9, rotulo: "IX · Paldea", primeiro: 906, ultimo: 1025 }
+];
+
+// Categorias. A PokéAPI não tem uma lista pronta de lendários, míticos e bebês: essa informação
+// só aparece na página de cada espécie (is_legendary, is_mythical e is_baby em /pokemon-species/{id}),
+// e seriam 1.025 chamadas. Por isso os números abaixo foram copiados desses campos uma única vez,
+// em 17/11/2026. Se a API ganhar espécies novas, é só atualizar estas listas.
+const CATEGORIAS = [
+  {
+    chave: "lendario",
+    nome: "Lendário",
+    ids: new Set([
+      144, 145, 146, 150, 243, 244, 245, 249, 250, 377, 378, 379, 380, 381, 382, 383, 384, 480, 481,
+      482, 483, 484, 485, 486, 487, 488, 638, 639, 640, 641, 642, 643, 644, 645, 646, 716, 717, 718,
+      772, 773, 785, 786, 787, 788, 789, 790, 791, 792, 800, 888, 889, 890, 891, 892, 894, 895, 896,
+      897, 898, 905, 1001, 1002, 1003, 1004, 1007, 1008, 1014, 1015, 1016, 1017, 1024
+    ])
+  },
+  {
+    chave: "mitico",
+    nome: "Mítico",
+    ids: new Set([
+      151, 251, 385, 386, 489, 490, 491, 492, 493, 494, 647, 648, 649, 719, 720, 721, 801, 802, 807,
+      808, 809, 893, 1025
+    ])
+  },
+  {
+    chave: "bebe",
+    nome: "Bebê",
+    ids: new Set([172, 173, 174, 175, 236, 238, 239, 240, 298, 360, 406, 433, 438, 439, 440, 446, 447, 458, 848])
+  }
+];
+
 // ===== DADOS E ELEMENTOS DA PÁGINA =====
-// Todos os Pokémon da API, só com nome e url: { name, url }. Vem numa única chamada.
+// Todos os Pokémon da API: { name, url, id }. Nome e url vêm numa única chamada;
+// o id é tirado do fim da url (ver pegarIdDaUrl).
 let indiceDePokemons = [];
 
 // Os Pokémon que já tiveram os detalhes carregados. Cada item tem o formato
-// combinado com a Pessoa 3: { id, nome, tipo, peso, altura, imagem }
+// combinado com a Pessoa 3: { id, nome, tipo, peso, altura, imagem }.
+// O campo extra tipos (todos os tipos) é usado só nos cartões daqui.
 let listaDePokemons = [];
+
+// Tags marcadas: até 2 tipos, quantas categorias quiser e no máximo uma geração.
+let tiposMarcados = [];
+let categoriasMarcadas = [];
+let geracaoMarcada = null;
+
+// Números dos Pokémon de cada tipo, guardados depois da primeira consulta: { fire: Set }.
+// Assim marcar o mesmo tipo de novo não pede nada à API.
+const idsPorTipo = {};
+
+// Conta os filtros iniciados, para uma resposta antiga da API não sobrescrever a nova.
+let numeroDoFiltro = 0;
+
+// Fica true quando a consulta de um tipo falhou: o "Tentar de novo" refaz o filtro.
+let filtroFalhou = false;
 
 // Os itens do índice que combinam com a busca, e quantos deles aparecem na tela.
 let resultadoDaBusca = [];
@@ -64,6 +132,8 @@ const botaoTentarDeNovo = document.querySelector("#btn-tentar-de-novo");
 const areaVazio = document.querySelector("#area-vazio");
 const listaCartoes = document.querySelector("#lista-cartoes");
 const botaoCarregarMais = document.querySelector("#btn-carregar-mais");
+const areaEtiquetas = document.querySelector("#area-etiquetas");
+const botaoLimparFiltros = document.querySelector("#btn-limpar-filtros");
 
 // ===== BUSCAR DADOS NA API =====
 // Faz o fetch de uma URL e devolve o JSON. Toda resposta passa pelo
@@ -77,7 +147,14 @@ async function buscarJson(url) {
   return await resposta.json();
 }
 
+// Tira o número do fim de uma url da API: ".../pokemon/25/" vira 25.
+function pegarIdDaUrl(url) {
+  const partes = url.split("/").filter((parte) => parte !== "");
+  return Number(partes[partes.length - 1]);
+}
+
 // Pega só o que interessa do JSON gigante de um Pokémon.
+// tipo é o primeiro tipo (é o que os favoritos guardam); tipos tem todos, para o cartão mostrar os dois.
 // peso e altura ficam nas unidades da API; a conversão é feita ao mostrar.
 // imagem é a sprite em pixel art (front_default). Em poucas formas especiais ela vem vazia (null).
 function montarPokemon(dados) {
@@ -85,6 +162,7 @@ function montarPokemon(dados) {
     id: dados.id,
     nome: dados.name,
     tipo: dados.types[0].type.name,
+    tipos: dados.types.map((item) => item.type.name),
     peso: dados.weight,
     altura: dados.height,
     imagem: dados.sprites.front_default
@@ -110,6 +188,16 @@ async function carregarDetalhes(itens) {
   });
 }
 
+// Devolve o conjunto com os números dos Pokémon de um tipo. Só chama a API na primeira vez;
+// depois usa o que ficou guardado em idsPorTipo.
+async function carregarIdsDoTipo(tipo) {
+  if (!idsPorTipo[tipo]) {
+    const dados = await buscarJson(TIPO_URL + tipo);
+    idsPorTipo[tipo] = new Set(dados.pokemon.map((item) => pegarIdDaUrl(item.pokemon.url)));
+  }
+  return idsPorTipo[tipo];
+}
+
 // Mostra a mensagem de erro na própria página, para quem está usando o site.
 function mostrarErro() {
   textoErro.textContent = "Não foi possível carregar os Pokémon. Confira sua conexão e tente de novo.";
@@ -124,7 +212,11 @@ async function carregarPokemons() {
 
   try {
     const lista = await buscarJson(API_URL);
-    indiceDePokemons = lista.results;
+    indiceDePokemons = lista.results.map((item) => ({
+      name: item.name,
+      url: item.url,
+      id: pegarIdDaUrl(item.url)
+    }));
   } catch (erro) {
     mostrarErro();
   } finally {
@@ -179,15 +271,21 @@ function criarMedida(rotulo, valor) {
   return medida;
 }
 
+// Nomes em português de todos os tipos do Pokémon: ["Fogo", "Voador"].
+function nomesDosTipos(pokemon) {
+  return pokemon.tipos.map((tipo) => NOMES_DOS_TIPOS[tipo] || formatarNome(tipo));
+}
+
 // Cria a figura do cartão com a sprite em pixel art (96 x 96).
 // Se a API não trouxer a sprite, mostra um aviso.
-function criarFigura(pokemon, nomeDoTipo) {
+function criarFigura(pokemon, nomes) {
   const figura = criarElemento("figure", "cartao__arte");
 
   if (pokemon.imagem) {
     const imagem = document.createElement("img");
+    const frase = nomes.length > 1 ? "dos tipos " : "do tipo ";
     imagem.src = pokemon.imagem;
-    imagem.alt = "Sprite de " + formatarNome(pokemon.nome) + ", Pokémon do tipo " + nomeDoTipo + ".";
+    imagem.alt = "Sprite de " + formatarNome(pokemon.nome) + ", Pokémon " + frase + nomes.join(" e ") + ".";
     imagem.width = 96;
     imagem.height = 96;
     imagem.loading = "lazy";
@@ -228,23 +326,27 @@ function criarBotaoFavorito(pokemon) {
   return botao;
 }
 
-// Monta o cartão completo de um Pokémon: sprite, nome, tipo, peso, altura e botão.
+// Monta o cartão completo de um Pokémon: sprite, nome, tipos, peso, altura e botão.
 function criarCartao(pokemon) {
-  const nomeDoTipo = NOMES_DOS_TIPOS[pokemon.tipo] || formatarNome(pokemon.tipo);
+  const nomes = nomesDosTipos(pokemon);
   const cartao = criarElemento("article", "cartao");
 
-  cartao.appendChild(criarFigura(pokemon, nomeDoTipo));
+  cartao.appendChild(criarFigura(pokemon, nomes));
   cartao.appendChild(criarElemento("p", "dado-sm", formatarNumero(pokemon.id)));
   cartao.appendChild(criarElemento("h3", "titulo-sm", formatarNome(pokemon.nome)));
 
-  // Chave de tipo do design system: quadradinho colorido (pelo data-tipo) + nome.
-  const chaveTipo = criarElemento("p", "chave-tipo");
-  const amostra = criarElemento("span", "amostra-tipo");
-  amostra.dataset.tipo = pokemon.tipo;
-  amostra.setAttribute("aria-hidden", "true");
-  chaveTipo.appendChild(amostra);
-  chaveTipo.appendChild(document.createTextNode(nomeDoTipo));
-  cartao.appendChild(chaveTipo);
+  // Chaves de tipo do design system, uma por tipo: quadradinho colorido (pelo data-tipo) + nome.
+  const chavesDeTipo = criarElemento("p", "chaves-tipo");
+  pokemon.tipos.forEach((tipo, posicao) => {
+    const chaveTipo = criarElemento("span", "chave-tipo");
+    const amostra = criarElemento("span", "amostra-tipo");
+    amostra.dataset.tipo = tipo;
+    amostra.setAttribute("aria-hidden", "true");
+    chaveTipo.appendChild(amostra);
+    chaveTipo.appendChild(document.createTextNode(nomes[posicao]));
+    chavesDeTipo.appendChild(chaveTipo);
+  });
+  cartao.appendChild(chavesDeTipo);
 
   const medidas = criarElemento("dl", "cartao__medidas");
   medidas.appendChild(criarMedida("Peso", formatarPeso(pokemon.peso)));
@@ -303,18 +405,63 @@ async function mostrarPagina() {
   }
 }
 
-// ===== BUSCA =====
-// Filtra todos os Pokémon pelo que foi digitado, sem diferenciar maiúscula de minúscula.
-function filtrarPokemons() {
+// ===== BUSCA E TAGS =====
+// Filtra todos os Pokémon pelo que foi digitado (sem diferenciar maiúscula de minúscula)
+// e pelas tags marcadas. Cada filtro tira Pokémon da lista; só fica quem passa em todos:
+//   - tipos: o Pokémon precisa ter todos os tipos marcados (fogo + voador acha o Charizard);
+//   - categorias: basta estar em uma das marcadas (lendário + mítico junta os dois grupos);
+//   - geração: o número do Pokémon precisa estar na faixa da geração.
+// As categorias e a geração valem para espécies. As formas alternativas (Mega, Gigantamax,
+// regionais, números acima de 10000) só entram quando o filtro é por tipo ou por nome.
+// É async porque a lista de um tipo pode precisar ser pedida à API.
+async function filtrarPokemons() {
   // Enquanto a lista de nomes não chegou, não há o que filtrar (evita o aviso de "nenhum" durante o carregamento).
   if (indiceDePokemons.length === 0) {
     return;
   }
 
+  numeroDoFiltro++;
+  const meuFiltro = numeroDoFiltro;
   const termo = campoBusca.value.trim().toLowerCase();
-  resultadoDaBusca = indiceDePokemons.filter((item) => item.name.toLowerCase().includes(termo));
-  quantidadeVisivel = POKEMONS_POR_PAGINA;
-  mostrarPagina();
+  const categorias = CATEGORIAS.filter((categoria) => categoriasMarcadas.includes(categoria.chave));
+  const geracao = GERACOES.find((item) => item.numero === geracaoMarcada);
+
+  filtroFalhou = false;
+  areaErro.hidden = true;
+  areaCarregando.hidden = false;
+
+  try {
+    const idsDosTipos = await Promise.all(tiposMarcados.map(carregarIdsDoTipo));
+
+    // O usuário mexeu em outro filtro enquanto a API respondia: este resultado é descartado.
+    if (meuFiltro !== numeroDoFiltro) {
+      return;
+    }
+
+    resultadoDaBusca = indiceDePokemons.filter((item) => {
+      if (!item.name.toLowerCase().includes(termo)) {
+        return false;
+      }
+      if (!idsDosTipos.every((ids) => ids.has(item.id))) {
+        return false;
+      }
+      if (categorias.length > 0 && !categorias.some((categoria) => categoria.ids.has(item.id))) {
+        return false;
+      }
+      if (geracao && (item.id < geracao.primeiro || item.id > geracao.ultimo)) {
+        return false;
+      }
+      return true;
+    });
+    quantidadeVisivel = POKEMONS_POR_PAGINA;
+    mostrarPagina();
+  } catch (erro) {
+    if (meuFiltro === numeroDoFiltro) {
+      filtroFalhou = true;
+      areaCarregando.hidden = true;
+      mostrarErro();
+    }
+  }
 }
 
 // Mostra mais uma página de cartões da busca atual.
@@ -323,19 +470,146 @@ function carregarMais() {
   mostrarPagina();
 }
 
-// Tenta de novo: se a lista de nomes nunca chegou, pede ela; senão, repete a página atual.
+// Tenta de novo: se a lista de nomes nunca chegou, pede ela; se foi o filtro que falhou,
+// refaz o filtro; senão, repete a página atual.
 function tentarDeNovo() {
   if (indiceDePokemons.length === 0) {
     carregarPokemons();
+  } else if (filtroFalhou) {
+    filtrarPokemons();
   } else {
     mostrarPagina();
   }
 }
 
+// ===== TAGS: BOTÕES =====
+// Cria o ícone ✓ que aparece dentro da tag marcada (nunca só a cor mostra a seleção).
+function criarIconeMarca() {
+  const espaco = "http://www.w3.org/2000/svg";
+  const icone = document.createElementNS(espaco, "svg");
+  icone.setAttribute("class", "icone icone--inline marca");
+  icone.setAttribute("viewBox", "0 0 24 24");
+  icone.setAttribute("aria-hidden", "true");
+
+  const tracado = document.createElementNS(espaco, "path");
+  tracado.setAttribute("d", "M20 6 9 17l-5-5");
+  icone.appendChild(tracado);
+  return icone;
+}
+
+// Cria uma tag: um botão que liga e desliga. grupo é "tipo", "categoria" ou "geracao"
+// e valor diz qual delas é (o aoClicarNaEtiqueta lê os dois). Só as tags de tipo levam o quadradinho colorido.
+function criarEtiqueta(grupo, valor, texto) {
+  const botao = criarElemento("button", "etiqueta");
+  botao.type = "button";
+  botao.dataset.grupo = grupo;
+  botao.dataset.valor = valor;
+  botao.setAttribute("aria-pressed", "false");
+
+  if (grupo === "tipo") {
+    const amostra = criarElemento("span", "amostra-tipo");
+    amostra.dataset.tipo = valor;
+    amostra.setAttribute("aria-hidden", "true");
+    botao.appendChild(amostra);
+  }
+
+  botao.appendChild(criarElemento("span", "", texto));
+  botao.appendChild(criarIconeMarca());
+  return botao;
+}
+
+// Cria as tags de todos os grupos dentro das áreas que já estão no HTML.
+function montarEtiquetas() {
+  const areaDeTipos = document.querySelector("#etiquetas-tipo");
+  const areaDeCategorias = document.querySelector("#etiquetas-categoria");
+  const areaDeGeracoes = document.querySelector("#etiquetas-geracao");
+
+  Object.keys(NOMES_DOS_TIPOS).forEach((tipo) => {
+    areaDeTipos.appendChild(criarEtiqueta("tipo", tipo, NOMES_DOS_TIPOS[tipo]));
+  });
+  CATEGORIAS.forEach((categoria) => {
+    areaDeCategorias.appendChild(criarEtiqueta("categoria", categoria.chave, categoria.nome));
+  });
+  GERACOES.forEach((geracao) => {
+    areaDeGeracoes.appendChild(criarEtiqueta("geracao", geracao.numero, geracao.rotulo));
+  });
+}
+
+// Liga ou desliga um valor de uma lista, sem mexer na lista original:
+// se já está lá, tira; se não está, põe no fim.
+function alternarNaLista(lista, valor) {
+  if (lista.includes(valor)) {
+    return lista.filter((item) => item !== valor);
+  }
+  return [...lista, valor];
+}
+
+// Deixa todas as tags iguais ao que está marcado: aria-pressed (o CSS mostra o ✓ e a aguada),
+// tags de tipo desativadas quando já há 2 marcadas, e "Limpar filtros" só aparece se há algo marcado.
+function atualizarEtiquetas() {
+  areaEtiquetas.querySelectorAll(".etiqueta").forEach((botao) => {
+    const grupo = botao.dataset.grupo;
+    const valor = botao.dataset.valor;
+    let marcada = false;
+
+    if (grupo === "tipo") {
+      marcada = tiposMarcados.includes(valor);
+    } else if (grupo === "categoria") {
+      marcada = categoriasMarcadas.includes(valor);
+    } else {
+      marcada = geracaoMarcada === Number(valor);
+    }
+
+    botao.setAttribute("aria-pressed", String(marcada));
+    botao.disabled = grupo === "tipo" && !marcada && tiposMarcados.length >= MAXIMO_DE_TIPOS;
+  });
+
+  const algumaMarcada = tiposMarcados.length > 0 || categoriasMarcadas.length > 0 || geracaoMarcada !== null;
+  botaoLimparFiltros.hidden = !algumaMarcada;
+}
+
+// Um único ouvinte para todas as tags (o clique "sobe" do botão até a área).
+function aoClicarNaEtiqueta(evento) {
+  const botao = evento.target.closest(".etiqueta");
+  if (!botao || botao.disabled) {
+    return;
+  }
+
+  const grupo = botao.dataset.grupo;
+  const valor = botao.dataset.valor;
+
+  if (grupo === "tipo") {
+    tiposMarcados = alternarNaLista(tiposMarcados, valor);
+  } else if (grupo === "categoria") {
+    categoriasMarcadas = alternarNaLista(categoriasMarcadas, valor);
+  } else {
+    // Geração é escolha única: clicar na marcada desmarca, clicar em outra troca.
+    const numero = Number(valor);
+    geracaoMarcada = geracaoMarcada === numero ? null : numero;
+  }
+
+  atualizarEtiquetas();
+  filtrarPokemons();
+}
+
+// Desmarca todas as tags. O texto da busca continua como está.
+function limparFiltros() {
+  tiposMarcados = [];
+  categoriasMarcadas = [];
+  geracaoMarcada = null;
+
+  atualizarEtiquetas();
+  filtrarPokemons();
+}
+
 // ===== INÍCIO =====
 // A cada letra digitada a lista é filtrada de novo (busca em tempo real).
 campoBusca.addEventListener("input", filtrarPokemons);
+areaEtiquetas.addEventListener("click", aoClicarNaEtiqueta);
+botaoLimparFiltros.addEventListener("click", limparFiltros);
 botaoCarregarMais.addEventListener("click", carregarMais);
 botaoTentarDeNovo.addEventListener("click", tentarDeNovo);
+
+montarEtiquetas();
 
 carregarPokemons();

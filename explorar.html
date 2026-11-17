@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Explorar | Guia de Campo</title>
-  <meta name="description" content="Busque espécies de Pokémon e veja tipo, peso e altura.">
+  <meta name="description" content="Busque espécies de Pokémon por nome, tipo, categoria ou geração e veja tipos, peso e altura.">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
 
   <main id="conteudo" class="conteiner conteudo">
     <h1 class="titulo-lg">Explorar</h1>
-    <p class="corpo-lg explorar__intro">Busque entre todos os Pokémon da PokéAPI e veja a sprite, o tipo, o peso e a altura de cada um.</p>
+    <p class="corpo-lg explorar__intro">Busque entre todos os Pokémon da PokéAPI, pelo nome ou pelas tags de tipo, categoria e geração, e veja a sprite, os tipos, o peso e a altura de cada um.</p>
 
     <!-- Busca: o label aponta para o input pelo for/id -->
     <section class="explorar__busca" aria-labelledby="titulo-busca">
@@ -49,6 +49,31 @@
         </div>
       </div>
       <p class="dado-sm explorar__contador" id="contador" aria-live="polite"></p>
+    </section>
+
+    <!-- Tags: filtros por tipo, categoria e geração. Os botões são criados pelo explorar.js
+         dentro das três áreas .etiquetas; as tags marcadas se combinam com a busca por nome. -->
+    <section class="explorar__tags" id="area-etiquetas" aria-labelledby="titulo-tags">
+      <h2 class="so-leitor" id="titulo-tags">Filtrar por tags</h2>
+
+      <div class="explorar__grupo" role="group" aria-labelledby="rotulo-tipo">
+        <p class="rotulo" id="rotulo-tipo">Tipo</p>
+        <div class="etiquetas" id="etiquetas-tipo"></div>
+        <p class="nota">Até 2 tipos: o Pokémon precisa ter todos os que estiverem marcados.</p>
+      </div>
+
+      <div class="explorar__grupo" role="group" aria-labelledby="rotulo-categoria">
+        <p class="rotulo" id="rotulo-categoria">Categoria</p>
+        <div class="etiquetas" id="etiquetas-categoria"></div>
+      </div>
+
+      <div class="explorar__grupo" role="group" aria-labelledby="rotulo-geracao">
+        <p class="rotulo" id="rotulo-geracao">Geração</p>
+        <div class="etiquetas" id="etiquetas-geracao"></div>
+        <p class="nota">Categoria e geração valem para as espécies; as formas alternativas (Mega, Gigantamax, regionais) só aparecem na busca por nome ou por tipo.</p>
+      </div>
+
+      <button class="botao botao--secundario explorar__limpar" id="btn-limpar-filtros" type="button" hidden>Limpar filtros</button>
     </section>
 
     <!-- Lista: carregando, erro, vazio e os cartões (criados pelo explorar.js) -->

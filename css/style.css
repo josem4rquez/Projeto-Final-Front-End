@@ -713,6 +713,73 @@ a:hover {
   min-height: calc(var(--text-data-sm) * var(--lh-data-sm));
 }
 
+/* Tags (filtros): um grupo por assunto, cada um com o rótulo, as tags e uma nota */
+.explorar__tags {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+.explorar__grupo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+.explorar__limpar {
+  align-self: flex-start;
+}
+/* O [hidden] junto da classe (0,2,0) vence o display: inline-flex do .botao e volta a esconder o botão. */
+.explorar__limpar[hidden] {
+  display: none;
+}
+
+/* Tag = opção de filtro do design system: 1px grafite (borda de controle), raio 2px.
+   Marcada: aguada + ✓ (nunca só a cor). O ✓ usa visibility para a tag não mudar de largura ao ser marcada.
+   Com 2 tipos marcados, as outras tags de tipo ficam desativadas: texto grafite e só o contorno do quadradinho. */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: var(--space-xs) var(--space-sm) var(--space-xs) var(--space-md);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-narrow);
+  font-size: var(--text-ui-md);
+  line-height: var(--lh-ui-md);
+  cursor: pointer;
+  transition: background-color var(--motion-hover);
+}
+.etiqueta:hover {
+  background: var(--color-neutral);
+}
+.etiqueta[aria-pressed="true"] {
+  background: var(--color-primary-wash);
+  border-color: var(--color-primary);
+}
+.etiqueta .marca {
+  visibility: hidden;
+}
+.etiqueta[aria-pressed="true"] .marca {
+  visibility: visible;
+}
+.etiqueta:disabled {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-secondary);
+  cursor: not-allowed;
+}
+.etiqueta:disabled .amostra-tipo {
+  background-color: transparent;
+}
+
 .explorar__lista {
   margin-top: var(--space-xl);
 }
@@ -1095,7 +1162,8 @@ a:hover {
 /* Movimento reduzido: remove as transições (sem forçar prioridade) */
 @media (prefers-reduced-motion: reduce) {
   .menu > a,
-  .botao {
+  .botao,
+  .etiqueta {
     transition: none;
   }
 }
