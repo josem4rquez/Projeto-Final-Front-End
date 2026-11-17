@@ -480,6 +480,96 @@ a:hover { color: var(--color-primary-strong); }
    .esqueleto, .estado-vazio, .mensagem-erro, .botao, .icone.
    ========================================================================= */
 
+/* Blocos da página: introdução, busca e lista */
+.explorar__intro { margin-top: var(--space-md); }
+
+.explorar__busca {
+  display: flex; flex-direction: column; gap: var(--space-sm);
+  max-width: 32rem;
+  margin-top: var(--space-xl);
+}
+.explorar__campo { display: flex; flex-direction: column; gap: var(--space-sm); }
+/* Reserva a altura do contador para a página não pular quando o número aparece */
+.explorar__contador { min-height: calc(var(--text-data-sm) * var(--lh-data-sm)); }
+
+.explorar__lista { margin-top: var(--space-xl); }
+.explorar__lista > .titulo-md { margin-bottom: var(--space-lg); }
+
+/* Carregando, erro e vazio */
+/* O atributo hidden perde para um display: flex de classe (.mensagem-erro, .estado-vazio).
+   Com [hidden] junto da classe a regra tem (0,2,0) e volta a esconder o elemento. */
+.explorar__estado[hidden] { display: none; }
+
+.estado-carregando {
+  font-family: var(--font-narrow);
+  font-size: var(--text-ui-md);
+  line-height: var(--lh-ui-md);
+  color: var(--color-secondary);
+}
+/* Dupla classe (0,2,0): vence .mensagem-erro (0,1,0) pela especificidade, em qualquer ordem.
+   O fallback é o token --color-error do design system, que o :root do style.css ainda não define. */
+.mensagem-erro.explorar__erro { color: var(--color-error, #9B411E); }
+.explorar__erro-corpo { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-md); }
+
+/* Grade dos cartões: 3 colunas no desktop. Para mudar o número de colunas, troque o 3. */
+.lista-cartoes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+/* Cartão de um Pokémon */
+.cartao {
+  display: flex; flex-direction: column; gap: var(--space-sm);
+  width: 100%;
+  margin: 0;                       /* o espaço entre cartões vem do gap da grade */
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-none);
+  background: var(--color-surface);
+}
+.cartao__arte {
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 1;
+  margin-bottom: var(--space-xs);
+}
+.cartao__arte img { width: 85%; height: auto; }
+/* Sem imagem: área em papel de prancha com o aviso no canto */
+.cartao__arte--vazia { align-items: flex-end; justify-content: flex-start; padding: var(--space-sm); background: var(--color-neutral); }
+
+.cartao__medidas { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+.cartao__medida { display: flex; flex-direction: column; gap: var(--space-xs); }
+.cartao__valor {
+  font-family: var(--font-narrow);
+  font-size: var(--text-data-md);
+  line-height: var(--lh-data-md);
+  font-feature-settings: "tnum" 1;
+}
+
+/* Botão de favoritar: margin-top auto empurra o botão para o fim do cartão */
+.cartao__favoritar { margin-top: auto; align-self: flex-start; }
+/* Marcado: .cartao .botao.favorito (0,3,0) vence .botao[aria-pressed="true"] e .botao--secundario:hover (0,2,0) */
+.cartao .botao.favorito {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-surface);
+}
+.cartao .botao.favorito:hover, .cartao .botao.favorito:active {
+  background: var(--color-primary-strong);
+  border-color: var(--color-primary-strong);
+  color: var(--color-surface);
+}
+
+/* Tablet: 2 colunas */
+@media (max-width: 1023px) {
+  .lista-cartoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Celular: 1 coluna */
+@media (max-width: 639px) {
+  .lista-cartoes { grid-template-columns: minmax(0, 1fr); }
+}
+
 
 /* ===== FERRAMENTAS (Pessoa 3) ===========================================
    Escreva aqui: estilos da calculadora, da lista de favoritos e a classe
