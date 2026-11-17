@@ -335,24 +335,91 @@ A chave utilizada no `localStorage` é `"favoritos"`.
 
 # TDE 02 --- Relatório de debugging
 
-**Seção a ser preenchida**
+Erros reais encontrados durante o desenvolvimento e a integração do projeto.
 
-Esta seção deverá ser preenchida com os erros reais encontrados durante
-o desenvolvimento e a integração do projeto, conforme o enunciado do TDE 02.
+### Erro 1: site sem CSS e sem JS no GitHub Pages
 
-O relatório deverá conter:
+- **Sintoma:** no GitHub Pages as páginas abriam sem estilo e sem o modo escuro.
+- **Ferramenta:** DevTools, aba Network (o `style.css` e os `.js` voltavam com status 404).
+- **Causa:** os caminhos começavam com `/`, então o navegador procurava os arquivos na
+  raiz do domínio (`usuario.github.io/css/...`) e não na pasta do projeto.
+- **Solução:** trocar para caminhos relativos nos 4 HTML (commit `c42d163`).
 
-- Pelo menos três erros investigados, sendo pelo menos um erro de
-  lógica.
-- Para cada erro: sintoma, ferramenta utilizada, causa identificada,
-  solução aplicada e código antes/depois.
-- Uma captura de tela de um breakpoint com o painel Scope ou Watch
-  visível.
-- Uma captura de tela de um erro investigado na aba Network.
+```html
+<!-- antes -->
+<link rel="stylesheet" href="/css/style.css">
+<script src="/scripts/script.js" defer></script>
 
-Não foram inseridos erros fictícios nesta documentação. Os registros, as
-correções e as capturas deverão ser adicionados por Eduardo Elias Lopes com base
-nos testes realizados pelo grupo.
+<!-- depois -->
+<link rel="stylesheet" href="css/style.css">
+<script src="scripts/script.js" defer></script>
+```
+
+### Erro 2: mensagem de erro sem cor no modo claro
+
+- **Sintoma:** a mensagem de erro da página Explorar não ficava com a cor de erro no modo claro.
+- **Ferramenta:** DevTools, aba Elements > Computed (a variável `--color-error` aparecia sem valor).
+- **Causa:** a variável `--color-error` só era definida dentro da classe `.escuro`.
+- **Solução:** definir a variável também no `:root` (commit `8d02521`).
+
+```css
+/* antes: --color-error existia só no .escuro */
+.mensagem-erro.explorar__erro { color: var(--color-error, #9B411E); }
+
+/* depois: definida no :root */
+:root {
+  --color-error: #9B411E;
+}
+.mensagem-erro.explorar__erro { color: var(--color-error); }
+```
+
+### Erro 3: campo inválido sem borda de erro no Contato
+
+- **Sintoma:** ao sair de um campo vazio, o JavaScript colocava a classe `.erro`, mas a
+  borda não mudava de cor.
+- **Ferramenta:** DevTools, aba Elements > Styles (a regra `.erro` aparecia riscada).
+- **Causa:** especificidade. A regra `.contato input` (0,1,1) é mais forte que `.erro`
+  (0,1,0), então a cor da borda de `.contato input` vencia.
+- **Solução:** deixar o seletor mais específico com `.contato .erro` (0,2,0).
+
+```css
+/* antes */
+.erro {
+  border-color: var(--color-error);
+}
+
+/* depois */
+.contato .erro {
+  border-color: var(--color-error);
+}
+```
+
+### Erro 4 (lógica): PREENCHER
+
+- **Sintoma:**
+- **Ferramenta:**
+- **Causa:**
+- **Solução:**
+
+```js
+// antes
+
+// depois
+```
+
+### Print do breakpoint (Scope/Watch)
+
+Breakpoint na linha `const json = await res.json();` do `scripts/contato.js`, com
+`res.status` no Watch mostrando 201.
+
+![Breakpoint com Watch](prints/breakpoint.png)
+
+### Print do erro investigado na aba Network
+
+URL do POST trocada de propósito para `/postss`: a aba Network mostrou o status 404 e a
+página exibiu a mensagem de erro. Depois a URL voltou para `/posts`.
+
+![Erro 404 na aba Network](prints/network.png)
 
 ---
 
