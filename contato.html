@@ -36,7 +36,23 @@
 
   <main id="conteudo" class="conteiner conteudo">
     <h1 class="titulo-lg">Contato</h1>
-    <!-- PESSOA 4: formulário com label for, required e button type=submit -->
+    <p class="corpo-lg">Mande uma mensagem para o grupo.</p>
+
+    <form id="form-contato" class="contato">
+      <label for="nome">Nome</label>
+      <input id="nome" type="text" placeholder="Seu nome" required>
+      <label for="email">E-mail</label>
+      <input id="email" type="email" placeholder="voce@email.com" required>
+      <label for="telefone">Telefone</label>
+      <input id="telefone" type="tel" placeholder="(41) 99999-9999" required>
+      <label for="idade">Idade</label>
+      <input id="idade" type="number" min="1" placeholder="18" required>
+      <label for="mensagem">Mensagem</label>
+      <textarea id="mensagem" placeholder="Escreva aqui..." required></textarea>
+      <button class="botao botao--primario" type="submit">Enviar</button>
+    </form>
+
+    <p id="resposta" aria-live="polite"></p>
   </main>
 
   <footer class="rodape">
