@@ -36,7 +36,41 @@
 
   <main id="conteudo" class="conteiner conteudo">
     <h1 class="titulo-lg">Explorar</h1>
-    <!-- PESSOA 2: input de busca, área de carregando, área de erro e container dos cartões -->
+    <p class="corpo-lg explorar__intro">Busque entre 50 espécies da PokéAPI e veja o tipo, o peso e a altura de cada uma.</p>
+
+    <!-- Busca: o label aponta para o input pelo for/id -->
+    <section class="explorar__busca" aria-labelledby="titulo-busca">
+      <h2 class="so-leitor" id="titulo-busca">Buscar espécies</h2>
+      <div class="explorar__campo" role="search">
+        <label class="rotulo" for="campo-busca">Buscar por nome</label>
+        <div class="busca">
+          <svg class="icone icone--inline" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input class="busca__campo" id="campo-busca" type="search" placeholder="Ex.: pikachu" autocomplete="off">
+        </div>
+      </div>
+      <p class="dado-sm explorar__contador" id="contador" aria-live="polite"></p>
+    </section>
+
+    <!-- Lista: carregando, erro, vazio e os cartões (criados pelo explorar.js) -->
+    <section class="explorar__lista" aria-labelledby="titulo-especies">
+      <h2 class="titulo-md" id="titulo-especies">Espécies</h2>
+
+      <p class="explorar__estado estado-carregando" id="area-carregando" role="status">Carregando...</p>
+
+      <div class="explorar__estado mensagem-erro explorar__erro" id="area-erro" role="alert" hidden>
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        <div class="explorar__erro-corpo">
+          <p id="texto-erro"></p>
+          <button class="botao botao--primario" id="btn-tentar-de-novo" type="button">Tentar de novo</button>
+        </div>
+      </div>
+
+      <div class="explorar__estado estado-vazio" id="area-vazio" hidden>
+        <p>Nenhum Pokémon encontrado</p>
+      </div>
+
+      <div class="lista-cartoes" id="lista-cartoes"></div>
+    </section>
   </main>
 
   <footer class="rodape">
