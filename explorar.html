@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Explorar | Guia de Campo</title>
+  <meta name="description" content="Busque espécies de Pokémon e veja tipo, peso e altura.">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&amp;display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/scripts/script.js" defer></script>
+  <script src="/scripts/explorar.js" defer></script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="cabecalho">
+    <div class="conteiner cabecalho__interno">
+      <a class="cabecalho__marca" href="index.html">Guia de Campo</a>
+      <div class="cabecalho__acoes">
+        <nav class="menu" aria-label="Principal">
+          <a href="index.html">Início</a>
+          <a href="explorar.html" aria-current="page">Explorar</a>
+          <a href="ferramentas.html">Ferramentas</a>
+          <a href="contato.html">Contato</a>
+        </nav>
+        <button class="botao botao--secundario" id="btn-modo-escuro" type="button" aria-pressed="false">
+          <svg class="icone icone--inline marca" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Modo escuro
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="conteiner conteudo">
+    <h1 class="titulo-lg">Explorar</h1>
+    <!-- PESSOA 2: input de busca, área de carregando, área de erro e container dos cartões -->
+  </main>
+
+  <footer class="rodape">
+    <div class="conteiner rodape__interno">
+      <p class="nota">Dados: PokéAPI (pokeapi.co). Pokémon e seus nomes são marcas de Nintendo, Creatures Inc. e GAME FREAK. Projeto de fã, sem fins lucrativos.</p>
+      <p class="nota">Projeto final de Front-End, RA 3.</p>
+    </div>
+  </footer>
+</body>
+</html>
