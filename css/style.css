@@ -541,7 +541,9 @@ a:hover { color: var(--color-primary-strong); }
   aspect-ratio: 1;
   margin-bottom: var(--space-xs);
 }
-.cartao__arte img { width: 85%; height: auto; }
+/* Sprite em pixel art de 96 x 96, ampliada sem suavizar (pixelated), para os pixels ficarem nítidos.
+   Ocupa a largura do cartão, até no máximo o triplo do tamanho original (288px). */
+.cartao__arte img { width: 100%; max-width: 288px; height: auto; image-rendering: pixelated; }
 /* Sem imagem: área em papel de prancha com o aviso no canto */
 .cartao__arte--vazia { align-items: flex-end; justify-content: flex-start; padding: var(--space-sm); background: var(--color-neutral); }
 
@@ -567,6 +569,11 @@ a:hover { color: var(--color-primary-strong); }
   border-color: var(--color-primary-strong);
   color: var(--color-surface);
 }
+
+/* Botão "Carregar mais", centralizado abaixo da grade.
+   O [hidden] junto da classe (0,2,0) vence o display: flex e volta a esconder o botão. */
+.explorar__mais { display: flex; width: fit-content; margin: var(--space-xl) auto 0; }
+.explorar__mais[hidden] { display: none; }
 
 /* Tablet: 2 colunas */
 @media (max-width: 1023px) {

@@ -36,7 +36,7 @@
 
   <main id="conteudo" class="conteiner conteudo">
     <h1 class="titulo-lg">Explorar</h1>
-    <p class="corpo-lg explorar__intro">Busque entre 50 espécies da PokéAPI e veja o tipo, o peso e a altura de cada uma.</p>
+    <p class="corpo-lg explorar__intro">Busque entre todos os Pokémon da PokéAPI e veja a sprite, o tipo, o peso e a altura de cada um.</p>
 
     <!-- Busca: o label aponta para o input pelo for/id -->
     <section class="explorar__busca" aria-labelledby="titulo-busca">
@@ -70,6 +70,9 @@
       </div>
 
       <div class="lista-cartoes" id="lista-cartoes"></div>
+
+      <!-- Mostra mais 30 cartões; o explorar.js esconde quando já mostrou todos -->
+      <button class="botao botao--secundario explorar__mais" id="btn-carregar-mais" type="button" hidden>Carregar mais</button>
     </section>
   </main>
 

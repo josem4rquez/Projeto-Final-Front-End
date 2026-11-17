@@ -1,10 +1,15 @@
 // explorar.js (Pessoa 2)
 // Arquivo carregado só em explorar.html, depois do script.js.
-// Busca 50 Pokémon na PokéAPI, mostra um cartão para cada um e filtra pela busca.
+// Busca na PokéAPI a lista com todos os Pokémon (só nomes) e mostra os cartões
+// aos poucos: os detalhes (tipo, peso, altura, sprite) são pedidos só dos Pokémon
+// que aparecem na tela. A busca por nome vale para todos eles.
 
 // ===== CONSTANTES =====
-// Endereço da API: lista com 50 Pokémon (só nome e url de cada um).
-const API_URL = "https://pokeapi.co/api/v2/pokemon?limit=50";
+// Endereço da API: lista com todos os Pokémon (só nome e url de cada um).
+const API_URL = "https://pokeapi.co/api/v2/pokemon?limit=10000";
+
+// Quantos cartões aparecem por vez (e quantos mais vêm a cada clique em "Carregar mais").
+const POKEMONS_POR_PAGINA = 30;
 
 // Nomes dos tipos em português. A chave é o nome que a API devolve.
 const NOMES_DOS_TIPOS = {
@@ -35,9 +40,20 @@ const FORMATADOR_DECIMAL = new Intl.NumberFormat("pt-BR", {
 });
 
 // ===== DADOS E ELEMENTOS DA PÁGINA =====
-// Todos os Pokémon já carregados. Cada item tem o formato combinado com a Pessoa 3:
-// { id, nome, tipo, peso, altura, imagem }
+// Todos os Pokémon da API, só com nome e url: { name, url }. Vem numa única chamada.
+let indiceDePokemons = [];
+
+// Os Pokémon que já tiveram os detalhes carregados. Cada item tem o formato
+// combinado com a Pessoa 3: { id, nome, tipo, peso, altura, imagem }
 let listaDePokemons = [];
+
+// Os itens do índice que combinam com a busca, e quantos deles aparecem na tela.
+let resultadoDaBusca = [];
+let quantidadeVisivel = POKEMONS_POR_PAGINA;
+
+// Conta as atualizações da tela. Se o usuário digitar de novo antes de a resposta
+// chegar, a resposta antiga é ignorada e não sobrescreve a nova.
+let numeroDaAtualizacao = 0;
 
 const campoBusca = document.querySelector("#campo-busca");
 const contador = document.querySelector("#contador");
@@ -47,6 +63,7 @@ const textoErro = document.querySelector("#texto-erro");
 const botaoTentarDeNovo = document.querySelector("#btn-tentar-de-novo");
 const areaVazio = document.querySelector("#area-vazio");
 const listaCartoes = document.querySelector("#lista-cartoes");
+const botaoCarregarMais = document.querySelector("#btn-carregar-mais");
 
 // ===== BUSCAR DADOS NA API =====
 // Faz o fetch de uma URL e devolve o JSON. Toda resposta passa pelo
@@ -62,6 +79,7 @@ async function buscarJson(url) {
 
 // Pega só o que interessa do JSON gigante de um Pokémon.
 // peso e altura ficam nas unidades da API; a conversão é feita ao mostrar.
+// imagem é a sprite em pixel art (front_default). Em poucas formas especiais ela vem vazia (null).
 function montarPokemon(dados) {
   return {
     id: dados.id,
@@ -69,31 +87,53 @@ function montarPokemon(dados) {
     tipo: dados.types[0].type.name,
     peso: dados.weight,
     altura: dados.height,
-    imagem: dados.sprites.other["official-artwork"].front_default
+    imagem: dados.sprites.front_default
   };
 }
 
-// Carrega a lista, depois os detalhes de cada Pokémon, e mostra os cartões.
+// Procura, entre os já carregados, o Pokémon com esse nome.
+function acharPokemon(nome) {
+  return listaDePokemons.find((pokemon) => pokemon.nome === nome);
+}
+
+// Pede os detalhes dos itens que ainda não foram carregados, todos ao mesmo tempo.
+// Promise.all espera todos terminarem; se um falhar, o erro sobe para quem chamou.
+async function carregarDetalhes(itens) {
+  const faltando = itens.filter((item) => !acharPokemon(item.name));
+  const detalhes = await Promise.all(faltando.map((item) => buscarJson(item.url)));
+
+  detalhes.forEach((dados) => {
+    // Duas buscas seguidas podem pedir o mesmo Pokémon; só guarda se ainda não estiver na lista.
+    if (!acharPokemon(dados.name)) {
+      listaDePokemons.push(montarPokemon(dados));
+    }
+  });
+}
+
+// Mostra a mensagem de erro na própria página, para quem está usando o site.
+function mostrarErro() {
+  textoErro.textContent = "Não foi possível carregar os Pokémon. Confira sua conexão e tente de novo.";
+  areaVazio.hidden = true;
+  areaErro.hidden = false;
+}
+
+// Carrega a lista com o nome de todos os Pokémon e mostra a primeira página.
 async function carregarPokemons() {
   areaErro.hidden = true;
   areaCarregando.hidden = false;
 
   try {
     const lista = await buscarJson(API_URL);
-    // Um fetch por Pokémon, todos ao mesmo tempo; Promise.all espera os 50 terminarem.
-    const detalhes = await Promise.all(
-      lista.results.map((item) => buscarJson(item.url))
-    );
-    listaDePokemons = detalhes.map(montarPokemon);
-    filtrarPokemons();
+    indiceDePokemons = lista.results;
   } catch (erro) {
-    // O erro aparece na própria página, para quem está usando o site.
-    textoErro.textContent = "Não foi possível carregar os Pokémon. Confira sua conexão e tente de novo.";
-    areaErro.hidden = false;
+    mostrarErro();
   } finally {
     // Roda sempre, com sucesso ou com erro: o "Carregando..." some.
     areaCarregando.hidden = true;
   }
+
+  // Se a lista não chegou, não há o que mostrar (filtrarPokemons já trata isso).
+  filtrarPokemons();
 }
 
 // ===== FORMATAÇÃO =====
@@ -139,21 +179,22 @@ function criarMedida(rotulo, valor) {
   return medida;
 }
 
-// Cria a figura do cartão. Se a API não trouxer imagem, mostra um aviso.
+// Cria a figura do cartão com a sprite em pixel art (96 x 96).
+// Se a API não trouxer a sprite, mostra um aviso.
 function criarFigura(pokemon, nomeDoTipo) {
   const figura = criarElemento("figure", "cartao__arte");
 
   if (pokemon.imagem) {
     const imagem = document.createElement("img");
     imagem.src = pokemon.imagem;
-    imagem.alt = "Arte oficial de " + formatarNome(pokemon.nome) + ", Pokémon do tipo " + nomeDoTipo + ".";
-    imagem.width = 475;
-    imagem.height = 475;
+    imagem.alt = "Sprite de " + formatarNome(pokemon.nome) + ", Pokémon do tipo " + nomeDoTipo + ".";
+    imagem.width = 96;
+    imagem.height = 96;
     imagem.loading = "lazy";
     figura.appendChild(imagem);
   } else {
     figura.classList.add("cartao__arte--vazia");
-    figura.appendChild(criarElemento("figcaption", "nota", "Sem arte oficial"));
+    figura.appendChild(criarElemento("figcaption", "nota", "Sem sprite"));
   }
 
   return figura;
@@ -187,7 +228,7 @@ function criarBotaoFavorito(pokemon) {
   return botao;
 }
 
-// Monta o cartão completo de um Pokémon: imagem, nome, tipo, peso, altura e botão.
+// Monta o cartão completo de um Pokémon: sprite, nome, tipo, peso, altura e botão.
 function criarCartao(pokemon) {
   const nomeDoTipo = NOMES_DOS_TIPOS[pokemon.tipo] || formatarNome(pokemon.tipo);
   const cartao = criarElemento("article", "cartao");
@@ -224,25 +265,77 @@ function mostrarCartoes(lista) {
 
   // Sem resultado, aparece "Nenhum Pokémon encontrado".
   areaVazio.hidden = lista.length !== 0;
-  contador.textContent = lista.length + (lista.length === 1 ? " espécie" : " espécies");
+}
+
+// Escreve "Mostrando 30 de 1.351 Pokémon" e esconde o "Carregar mais" quando já mostrou tudo.
+function atualizarRodapeDaLista(mostrados, total) {
+  contador.textContent = "Mostrando " + mostrados.toLocaleString("pt-BR") + " de " + total.toLocaleString("pt-BR") + " Pokémon";
+  botaoCarregarMais.hidden = mostrados >= total;
+}
+
+// Mostra a página atual dos resultados: pede os detalhes que faltam e cria os cartões.
+async function mostrarPagina() {
+  numeroDaAtualizacao++;
+  const minhaAtualizacao = numeroDaAtualizacao;
+  const visiveis = resultadoDaBusca.slice(0, quantidadeVisivel);
+
+  areaErro.hidden = true;
+  areaCarregando.hidden = false;
+
+  try {
+    await carregarDetalhes(visiveis);
+
+    // Chegou uma atualização mais nova enquanto esta esperava a API: esta é descartada.
+    if (minhaAtualizacao !== numeroDaAtualizacao) {
+      return;
+    }
+
+    mostrarCartoes(visiveis.map((item) => acharPokemon(item.name)));
+    atualizarRodapeDaLista(visiveis.length, resultadoDaBusca.length);
+  } catch (erro) {
+    if (minhaAtualizacao === numeroDaAtualizacao) {
+      mostrarErro();
+    }
+  } finally {
+    if (minhaAtualizacao === numeroDaAtualizacao) {
+      areaCarregando.hidden = true;
+    }
+  }
 }
 
 // ===== BUSCA =====
-// Filtra a lista pelo que foi digitado, sem diferenciar maiúscula de minúscula.
+// Filtra todos os Pokémon pelo que foi digitado, sem diferenciar maiúscula de minúscula.
 function filtrarPokemons() {
-  // Enquanto nada foi carregado, não há o que filtrar (evita o aviso de "nenhum" durante o carregamento).
-  if (listaDePokemons.length === 0) {
+  // Enquanto a lista de nomes não chegou, não há o que filtrar (evita o aviso de "nenhum" durante o carregamento).
+  if (indiceDePokemons.length === 0) {
     return;
   }
 
   const termo = campoBusca.value.trim().toLowerCase();
-  const filtrados = listaDePokemons.filter((pokemon) => pokemon.nome.toLowerCase().includes(termo));
-  mostrarCartoes(filtrados);
+  resultadoDaBusca = indiceDePokemons.filter((item) => item.name.toLowerCase().includes(termo));
+  quantidadeVisivel = POKEMONS_POR_PAGINA;
+  mostrarPagina();
+}
+
+// Mostra mais uma página de cartões da busca atual.
+function carregarMais() {
+  quantidadeVisivel += POKEMONS_POR_PAGINA;
+  mostrarPagina();
+}
+
+// Tenta de novo: se a lista de nomes nunca chegou, pede ela; senão, repete a página atual.
+function tentarDeNovo() {
+  if (indiceDePokemons.length === 0) {
+    carregarPokemons();
+  } else {
+    mostrarPagina();
+  }
 }
 
 // ===== INÍCIO =====
 // A cada letra digitada a lista é filtrada de novo (busca em tempo real).
 campoBusca.addEventListener("input", filtrarPokemons);
-botaoTentarDeNovo.addEventListener("click", carregarPokemons);
+botaoCarregarMais.addEventListener("click", carregarMais);
+botaoTentarDeNovo.addEventListener("click", tentarDeNovo);
 
 carregarPokemons();
