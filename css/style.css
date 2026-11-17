@@ -23,6 +23,9 @@ body {
   --color-primary-strong: #552B16; 
   --color-primary-wash: #F1D9C7;  
 
+  /* Erro: corrosão de tinta (só texto e borda de campo inválido). O .escuro redefine este valor. */
+  --color-error: #9B411E;
+
  
 
   
@@ -506,9 +509,9 @@ a:hover { color: var(--color-primary-strong); }
   line-height: var(--lh-ui-md);
   color: var(--color-secondary);
 }
-/* Dupla classe (0,2,0): vence .mensagem-erro (0,1,0) pela especificidade, em qualquer ordem.
-   O fallback é o token --color-error do design system, que o :root do style.css ainda não define. */
-.mensagem-erro.explorar__erro { color: var(--color-error, #9B411E); }
+/* Cor do erro: usa o token --color-error (definido no :root e redefinido no .escuro).
+   Dupla classe (0,2,0) para vencer .mensagem-erro (0,1,0) pela especificidade. */
+.mensagem-erro.explorar__erro { color: var(--color-error); }
 .explorar__erro-corpo { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-md); }
 
 /* Grade dos cartões: 3 colunas no desktop. Para mudar o número de colunas, troque o 3. */
