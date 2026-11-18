@@ -11,7 +11,6 @@ body {
 :root {
   color-scheme: light;
 
-  /* Papel e tinta (hex) */
   --color-surface: #f6f2e8;
   --color-neutral: #eee6d9;
   --color-border: #d5cdbe;
@@ -22,7 +21,6 @@ body {
   --color-primary-strong: #552b16;
   --color-primary-wash: #f1d9c7;
 
-  /* Erro: corrosão de tinta (só texto e borda de campo inválido). O .escuro redefine este valor. */
   --color-error: #9b411e;
 
   --type-normal: #afa38c;
@@ -44,12 +42,10 @@ body {
   --type-steel: #7c8f9d;
   --type-fairy: #e4a6c0;
 
-  /* Famílias */
   --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, serif;
   --font-narrow:
     "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
 
-  /* Escala tipográfica (tamanho / entrelinha / tracking) */
   --text-display: 64px;
   --lh-display: 1;
   --ls-display: -0.025em;
@@ -86,15 +82,15 @@ body {
   --lh-data-sm: 1.3;
   --ls-data-sm: 0.02em;
 
-  /* Pesos: apenas 400 e 700 */
+
   --weight-regular: 400;
   --weight-bold: 700;
 
-  /* Raios: conteúdo 0, controles 2px */
+  
   --radius-none: 0px;
   --radius-sm: 2px;
 
-  /* Espaçamento (base 8px) */
+  
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -102,7 +98,6 @@ body {
   --space-xl: 48px;
   --space-xxl: 96px;
 
-  /* Grade */
   --grid-columns: 12;
   --grid-gutter: 24px;
   --grid-margin: 48px;
@@ -111,19 +106,16 @@ body {
   --cell-min: 168px;
   --measure: 60ch;
 
-  /* Controles */
   --control-height: 44px;
   --swatch-size: 10px;
   --plate-band: 6px;
   --focus-ring: 2px solid var(--color-primary);
   --focus-offset: 2px;
 
-  /* Movimento */
   --motion-hover: 120ms ease-out;
   --motion-fade: 200ms ease-out;
 }
 
-/* ---- Reset mínimo ------------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -169,7 +161,6 @@ textarea {
   color: var(--color-on-surface);
 }
 
-/* Foco: anel de 2px ferrogálico com 2px de afastamento, em tudo que é focável */
 :focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -187,7 +178,6 @@ textarea {
   border: 0;
 }
 
-/* Link para pular a navegação (aparece só com o foco do teclado) */
 .pular {
   position: absolute;
   left: var(--space-md);
@@ -203,7 +193,6 @@ textarea {
   transform: translateY(0);
 }
 
-/* ---- Tipografia --------------------------------------------------------- */
 .display {
   font-size: var(--text-display);
   font-weight: var(--weight-regular);
@@ -235,7 +224,7 @@ textarea {
   max-width: var(--measure);
 }
 .nota {
-  font-size: 0.8125rem; /* rem: 13px, igual ao token caption */
+  font-size: 0.8125rem; 
   line-height: var(--lh-caption);
   color: var(--color-secondary);
 }
@@ -267,7 +256,6 @@ textarea {
   font-feature-settings: "tnum" 1;
 }
 
-/* ---- Links -------------------------------------------------------------- */
 a {
   color: var(--color-primary);
   text-decoration: underline;
@@ -278,7 +266,6 @@ a:hover {
   color: var(--color-primary-strong);
 }
 
-/* ---- Layout ------------------------------------------------------------- */
 .conteiner {
   max-width: var(--content-max);
   margin-inline: auto;
@@ -293,7 +280,7 @@ a:hover {
   padding-block: var(--space-xl) var(--space-xxl);
 }
 
-/* ---- Cabeçalho: nome à esquerda, navegação e modo escuro à direita ------ */
+
 .cabecalho {
   position: sticky;
   top: 0;
@@ -310,12 +297,12 @@ a:hover {
   padding-block: var(--space-md);
 }
 .cabecalho__marca {
-  font-size: 1.25rem; /* rem: 20px, igual ao token headline-sm */
+  font-size: 1.25rem; 
   font-weight: var(--weight-bold);
   line-height: var(--lh-headline-sm);
   color: var(
     --color-on-surface
-  ); /* exceção do design system: nome do site em tinta */
+  ); 
   text-decoration: none;
 }
 .cabecalho__marca:hover {
@@ -328,7 +315,6 @@ a:hover {
   gap: var(--space-sm) var(--space-lg);
 }
 
-/* Navegação (flexbox) — o combinador `.menu > a` estiliza só os filhos diretos */
 .menu {
   display: flex;
   justify-content: flex-end;
@@ -351,14 +337,12 @@ a:hover {
 .menu > a:hover {
   background: var(--color-neutral);
 }
-/* Página atual: aguada + tinta de impressão, sem sublinhado (não é cor sozinha: o fundo muda) */
 .menu > a[aria-current="page"] {
   background: var(--color-primary-wash);
   color: var(--color-on-surface);
   text-decoration: none;
 }
 
-/* ---- Rodapé ------------------------------------------------------------- */
 .rodape {
   border-top: 1px solid var(--color-border);
   padding-block: var(--space-lg) var(--space-xl);
@@ -369,7 +353,6 @@ a:hover {
   gap: var(--space-sm);
 }
 
-/* ---- Botões ------------------------------------------------------------- */
 .botao {
   display: inline-flex;
   align-items: center;
@@ -410,7 +393,7 @@ a:hover {
   background: var(--color-primary-wash);
   color: var(--color-primary-strong);
 }
-/* Botão alternável (modo escuro): ligado = aguada + ✓ (nunca só cor) */
+
 .botao[aria-pressed="true"] {
   background: var(--color-primary-wash);
   color: var(--color-primary-strong);
@@ -422,7 +405,6 @@ a:hover {
   display: inline-block;
 }
 
-/* ---- Ícones (Lucide, traço 1,5) ---------------------------------------- */
 .icone {
   width: 20px;
   height: 20px;
@@ -438,7 +420,6 @@ a:hover {
   height: 16px;
 }
 
-/* ---- Busca (usada na página Explorar) ---------------------------------- */
 .busca {
   display: flex;
   align-items: center;
@@ -461,7 +442,7 @@ a:hover {
   background: transparent;
   outline: none;
   font-family: var(--font-narrow);
-  font-size: var(--text-ui-md); /* 16px: evita zoom no iOS */
+  font-size: var(--text-ui-md); 
   color: var(--color-on-surface);
 }
 .busca__campo::placeholder {
@@ -471,7 +452,7 @@ a:hover {
   display: none;
 }
 
-/* ---- Chave de tipo: swatch de 10px contornado + nome ------------------- */
+
 .chaves-tipo {
   display: flex;
   flex-wrap: wrap;
@@ -494,7 +475,7 @@ a:hover {
   height: var(--swatch-size);
   flex: none;
   border-radius: var(--radius-none);
-  box-shadow: inset 0 0 0 1px var(--color-on-surface); /* contorno por dentro */
+  box-shadow: inset 0 0 0 1px var(--color-on-surface); 
   background: transparent;
 }
 .amostra-tipo[data-tipo="normal"] {
@@ -552,11 +533,11 @@ a:hover {
   background-color: var(--type-fairy);
 }
 
-/* ---- Estados: carregando, vazio e erro (usados em Explorar) ------------- */
+
 .esqueleto {
   background: var(--color-neutral);
   border-radius: var(--radius-none);
-} /* estático, sem shimmer */
+} 
 .estado-vazio {
   display: flex;
   flex-direction: column;
@@ -576,7 +557,7 @@ a:hover {
   margin-top: 3px;
 }
 
-/* ---- Prancha (papel mais encorpado colado na página) -------------------- */
+
 .prancha {
   display: flex;
   flex-direction: column;
@@ -625,7 +606,7 @@ a:hover {
   --color-error: hsl(14 72% 66%);
 }
 
-/* ===== INÍCIO (Pessoa 1) ================================================ */
+
 .hero {
   align-items: center;
   row-gap: var(--space-xl);
@@ -685,13 +666,7 @@ a:hover {
   overflow-wrap: anywhere;
 }
 
-/* ===== EXPLORAR (Pessoa 2) ==============================================
-   Escreva aqui: .cartao, grid de cartões, estados de carregando/erro.
-   Já existem na base: .busca, .chaves-tipo/.chave-tipo/.amostra-tipo,
-   .esqueleto, .estado-vazio, .mensagem-erro, .botao, .icone.
-   ========================================================================= */
 
-/* Blocos da página: introdução, busca e lista */
 .explorar__intro {
   margin-top: var(--space-md);
 }
@@ -708,12 +683,12 @@ a:hover {
   flex-direction: column;
   gap: var(--space-sm);
 }
-/* Reserva a altura do contador para a página não pular quando o número aparece */
+
 .explorar__contador {
   min-height: calc(var(--text-data-sm) * var(--lh-data-sm));
 }
 
-/* Tags (filtros): um grupo por assunto, cada um com o rótulo, as tags e uma nota */
+
 .explorar__tags {
   display: flex;
   flex-direction: column;
@@ -733,14 +708,12 @@ a:hover {
 .explorar__limpar {
   align-self: flex-start;
 }
-/* O [hidden] junto da classe (0,2,0) vence o display: inline-flex do .botao e volta a esconder o botão. */
+
 .explorar__limpar[hidden] {
   display: none;
 }
 
-/* Tag = opção de filtro do design system: 1px grafite (borda de controle), raio 2px.
-   Marcada: aguada + ✓ (nunca só a cor). O ✓ usa visibility para a tag não mudar de largura ao ser marcada.
-   Com 2 tipos marcados, as outras tags de tipo ficam desativadas: texto grafite e só o contorno do quadradinho. */
+
 .etiqueta {
   display: inline-flex;
   align-items: center;
@@ -787,9 +760,7 @@ a:hover {
   margin-bottom: var(--space-lg);
 }
 
-/* Carregando, erro e vazio */
-/* O atributo hidden perde para um display: flex de classe (.mensagem-erro, .estado-vazio).
-   Com [hidden] junto da classe a regra tem (0,2,0) e volta a esconder o elemento. */
+
 .explorar__estado[hidden] {
   display: none;
 }
@@ -800,8 +771,7 @@ a:hover {
   line-height: var(--lh-ui-md);
   color: var(--color-secondary);
 }
-/* Cor do erro: usa o token --color-error (definido no :root e redefinido no .escuro).
-   Dupla classe (0,2,0) para vencer .mensagem-erro (0,1,0) pela especificidade. */
+
 .mensagem-erro.explorar__erro {
   color: var(--color-error);
 }
@@ -812,10 +782,7 @@ a:hover {
   gap: var(--space-md);
 }
 
-/* Grade dos cartões: 3 colunas no desktop. Para mudar o número de colunas, troque o 3.
-   Espaço entre dois cartões = margem + gap + margem = 8 + 8 + 8 = 24px.
-   A margem negativa do container desfaz a margem dos cartões nas bordas,
-   para o primeiro cartão continuar alinhado com o título da seção. */
+
 .lista-cartoes {
   --margem-cartao: var(--space-sm);
   display: grid;
@@ -824,14 +791,13 @@ a:hover {
   margin: calc(-1 * var(--margem-cartao));
 }
 
-/* Cartão de um Pokémon */
 .cartao {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
   width: calc(
     100% - 2 * var(--margem-cartao)
-  ); /* a célula inteira menos as margens laterais */
+  ); 
   margin: var(--margem-cartao);
   padding: var(--space-md);
   border: 1px solid var(--color-border);
@@ -845,10 +811,8 @@ a:hover {
   aspect-ratio: 1;
   margin-bottom: var(--space-xs);
 }
-/* Sprite em pixel art de 96 x 96, ampliada sem suavizar (pixelated), para os pixels ficarem nítidos.
-   Ocupa a largura do cartão, até no máximo o triplo do tamanho original (288px). */
+
 .cartao__arte img { width: 100%; max-width: 288px; height: auto; image-rendering: pixelated; }
-/* Sem imagem: área em papel de prancha com o aviso no canto */
 .cartao__arte--vazia {
   align-items: flex-end;
   justify-content: flex-start;
@@ -873,12 +837,12 @@ a:hover {
   font-feature-settings: "tnum" 1;
 }
 
-/* Botão de favoritar: margin-top auto empurra o botão para o fim do cartão */
+
 .cartao__favoritar {
   margin-top: auto;
   align-self: flex-start;
 }
-/* Marcado: .cartao .botao.favorito (0,3,0) vence .botao[aria-pressed="true"] e .botao--secundario:hover (0,2,0) */
+
 .cartao .botao.favorito {
   background: var(--color-primary);
   border-color: var(--color-primary);
@@ -891,19 +855,18 @@ a:hover {
   color: var(--color-surface);
 }
 
-/* Botão "Carregar mais", centralizado abaixo da grade.
-   O [hidden] junto da classe (0,2,0) vence o display: flex e volta a esconder o botão. */
+
 .explorar__mais { display: flex; width: fit-content; margin: var(--space-xl) auto 0; }
 .explorar__mais[hidden] { display: none; }
 
-/* Tablet: 2 colunas */
+
 @media (max-width: 1023px) {
   .lista-cartoes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* Celular: 1 coluna */
+
 @media (max-width: 639px) {
   .lista-cartoes {
     grid-template-columns: minmax(0, 1fr);
@@ -1089,15 +1052,6 @@ a:hover {
   }
 }
 
-/* O estado .favorito dos cartões de Explorar já utiliza os estilos definidos
-   junto aos cartões da Pessoa 2. Aqui a Pessoa 3 apenas alterna essa classe
-   por meio de classList no JavaScript. */
-/* ===== FIM FERRAMENTAS (Pessoa 3) ====================================== */
-
-/* ===== CONTATO (Pessoa 4) ===============================================
-   Escreva aqui: input[type="email"], :focus, ::placeholder e a classe .erro.
-   Cores de erro: var(--color-error), sempre com mensagem escrita.
-   ========================================================================= */
   .contato {
     display: flex;
     flex-direction: column;
@@ -1118,7 +1072,6 @@ a:hover {
     resize: vertical;
   }
 
-  /* seletor de atributo: só o campo de e-mail */
   input[type="email"] {
     text-transform: lowercase;
   }
@@ -1142,10 +1095,7 @@ a:hover {
     margin-top: var(--space-sm);
   }
 
-/* ===== RESPONSIVO (Pessoa 1) ============================================
-   Pontos de quebra do design system: < 640px, 640–1023px e >= 1024px.
-   Cada pessoa pode acrescentar a media query da sua seção logo abaixo.
-   ========================================================================= */
+
 @media (max-width: 1023px) {
   .hero__texto,
   .hero .prancha {
@@ -1202,7 +1152,7 @@ a:hover {
   }
 }
 
-/* Movimento reduzido: remove as transições (sem forçar prioridade) */
+
 @media (prefers-reduced-motion: reduce) {
   .menu > a,
   .botao,

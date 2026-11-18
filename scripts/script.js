@@ -11,7 +11,8 @@ function lerTema() {
 function salvarTema(valor) {
   try {
     localStorage.setItem(CHAVE_TEMA, valor);
-  } catch (erro) {}
+  } catch (erro) {
+  }
 }
 
 function atualizarBotaoTema(botao) {
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarBotaoTema(botao);
   });
 
+
   if (lerTema() === "escuro") {
     document.body.classList.add("escuro");
   }
@@ -51,7 +53,8 @@ function lerFavoritos() {
 function salvarFavoritos(lista) {
   try {
     localStorage.setItem("favoritos", JSON.stringify(lista));
-  } catch (erro) {}
+  } catch (erro) {
+  }
 }
 
 function alternarFavorito(pokemon) {
