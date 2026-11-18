@@ -1,10 +1,3 @@
-// ==========================================================================
-// ferramentas.js (Pessoa 3)
-// Calculadora, médias e filtro dos Pokémon favoritos.
-// ==========================================================================
-
-// ===== CALCULADORA ========================================================
-
 function somar(a, b) {
   return a + b;
 }
@@ -25,7 +18,6 @@ function dividir(a, b) {
   return a / b;
 }
 
-// Recebe uma operação como callback e devolve seu resultado.
 function calcular(a, b, operacao) {
   return operacao(a, b);
 }
@@ -36,7 +28,6 @@ const campoOperacao = document.querySelector("#operacao");
 const resultadoCalculo = document.querySelector("#resultado-calculo");
 const botaoCalcular = document.querySelector("#btn-calcular");
 
-// Função anônima usada no evento de clique, conforme o TDE 01.
 botaoCalcular.addEventListener("click", function () {
   if (campoNumero1.value.trim() === "" || campoNumero2.value.trim() === "") {
     resultadoCalculo.textContent = "Preencha os dois números para calcular.";
@@ -70,8 +61,6 @@ botaoCalcular.addEventListener("click", function () {
   }
 });
 
-// ===== ESTATÍSTICAS DOS FAVORITOS ========================================
-
 const elementoMediaPeso = document.querySelector("#media-peso");
 const elementoMediaAltura = document.querySelector("#media-altura");
 const elementoListaFavoritos = document.querySelector("#lista-favoritos");
@@ -80,7 +69,6 @@ const elementoContadorFavoritos = document.querySelector("#contador-favoritos");
 const botaoFiltroPeso = document.querySelector("#btn-filtro");
 const botaoMostrarTodos = document.querySelector("#btn-todos");
 
-// A PokéAPI fornece peso em hectogramas e altura em decímetros.
 function formatarPeso(peso) {
   return (peso / 10).toFixed(1).replace(".", ",") + " kg";
 }
@@ -97,7 +85,6 @@ function formatarNome(nome) {
   return nome.charAt(0).toUpperCase() + nome.slice(1);
 }
 
-// Calcula a média de peso e altura de todos os Pokémon favoritos.
 function atualizarMedias() {
   const favoritos = lerFavoritos();
 
@@ -123,7 +110,6 @@ function atualizarMedias() {
   elementoMediaAltura.textContent = formatarAltura(mediaAltura);
 }
 
-// Cria os elementos com textContent para não inserir dados como HTML.
 function mostrarFavoritos(favoritos) {
   elementoListaFavoritos.textContent = "";
   elementoContadorFavoritos.textContent =
@@ -179,14 +165,12 @@ function mostrarFavoritos(favoritos) {
   });
 }
 
-// Arrow function: mostra novamente a lista completa.
 const mostrarTodos = () => {
   mostrarFavoritos(lerFavoritos());
   botaoFiltroPeso.setAttribute("aria-pressed", "false");
   botaoMostrarTodos.setAttribute("aria-pressed", "true");
 };
 
-// Arrow function e filter: seleciona Pokémon com mais de 10 kg.
 const filtrarPorPeso = () => {
   const favoritos = lerFavoritos();
   const filtrados = favoritos.filter((pokemon) => pokemon.peso > 100);
@@ -199,6 +183,5 @@ const filtrarPorPeso = () => {
 botaoFiltroPeso.addEventListener("click", filtrarPorPeso);
 botaoMostrarTodos.addEventListener("click", mostrarTodos);
 
-// Atualiza os dados quando a página é aberta.
 atualizarMedias();
 mostrarTodos();
