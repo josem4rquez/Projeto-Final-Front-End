@@ -1,110 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Início | Guia de Campo</title>
-  <meta name="description" content="Pokédex em forma de guia de campo, feita com a PokéAPI.">
-  <link rel="icon" href="data:,">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&amp;display=swap">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="scripts/script.js" defer></script>
-</head>
-<body>
-  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Início | Guia de Campo</title>
+    <meta
+      name="description"
+      content="Pokédex em forma de guia de campo, feita com a PokéAPI."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&amp;display=swap"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="scripts/script.js" defer></script>
+  </head>
+  <body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="cabecalho">
-    <div class="conteiner cabecalho__interno">
-      <a class="cabecalho__marca" href="index.html">Guia de Campo</a>
-      <div class="cabecalho__acoes">
-        <nav class="menu" aria-label="Principal">
-          <a href="index.html" aria-current="page">Início</a>
-          <a href="explorar.html">Explorar</a>
-          <a href="ferramentas.html">Ferramentas</a>
-          <a href="contato.html">Contato</a>
-        </nav>
-        <button class="botao botao--secundario" id="btn-modo-escuro" type="button" aria-pressed="false">
-          <svg class="icone icone--inline marca" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Modo escuro
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main id="conteudo" class="conteiner conteudo">
-    <section class="hero grade-12" aria-labelledby="titulo-hero">
-      <div class="hero__texto">
-        <p class="rotulo">Projeto final de Front-End</p>
-        <h1 class="display" id="titulo-hero">Guia de Campo Pokémon</h1>
-        <p class="corpo-lg">Uma Pokédex que trata cada espécie como num guia de identificação: número, nome, tipo, peso e altura, buscados ao vivo na PokéAPI.</p>
-        <div class="hero__acoes">
-          <a class="botao botao--primario" href="explorar.html">Explorar espécies</a>
-          <a class="botao botao--secundario" href="contato.html">Falar com o grupo</a>
+    <header class="cabecalho">
+      <div class="conteiner cabecalho__interno">
+        <a class="cabecalho__marca" href="index.html">Guia de Campo</a>
+        <div class="cabecalho__acoes">
+          <nav class="menu" aria-label="Principal">
+            <a href="index.html" aria-current="page">Início</a>
+            <a href="explorar.html">Explorar</a>
+            <a href="ferramentas.html">Ferramentas</a>
+            <a href="contato.html">Contato</a>
+          </nav>
+          <button
+            class="botao botao--secundario"
+            id="btn-modo-escuro"
+            type="button"
+            aria-pressed="false"
+          >
+            <svg
+              class="icone icone--inline marca"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            Modo escuro
+          </button>
         </div>
       </div>
+    </header>
 
-      <figure class="prancha" data-tipo="electric">
-        <span class="dado-lg">Nº 0025</span>
-        <div class="prancha__arte">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Arte oficial do Pikachu: um roedor amarelo de bochechas vermelhas, orelhas pontudas e cauda em forma de raio." width="475" height="475">
+    <main id="conteudo" class="conteiner conteudo">
+      <section class="hero grade-12" aria-labelledby="titulo-hero">
+        <div class="hero__texto">
+          <p class="rotulo">Projeto final de Front-End</p>
+          <h1 class="display" id="titulo-hero">Guia de Campo Pokémon</h1>
+          <p class="corpo-lg">
+            Uma Pokédex que trata cada espécie como num guia de identificação:
+            número, nome, tipo, peso e altura, buscados ao vivo na PokéAPI.
+          </p>
+          <div class="hero__acoes">
+            <a class="botao botao--primario" href="explorar.html"
+              >Explorar espécies</a
+            >
+            <a class="botao botao--secundario" href="contato.html"
+              >Falar com o grupo</a
+            >
+          </div>
         </div>
-        <figcaption class="nota">Fig. Nº 0025 — Pikachu, arte oficial.</figcaption>
-      </figure>
-    </section>
 
-    <section class="secao" aria-labelledby="titulo-projeto">
-      <h2 class="titulo-lg secao__titulo" id="titulo-projeto">Sobre o projeto</h2>
-      <div class="grade-12 secao__lista secao__lista--tres">
-        <article class="bloco">
-          <h3 class="titulo-sm">O tema</h3>
-          <p>A Pokédex foi pensada como um guia de campo naturalista: cada espécie ganha um número, uma legenda curta e medidas exatas, e quem lê aprende a reconhecer comparando.</p>
-        </article>
-        <article class="bloco">
-          <h3 class="titulo-sm">De onde vêm os dados</h3>
-          <p>A página Explorar faz um GET na PokéAPI e mostra imagem, nome, tipo, peso e altura de 50 espécies. A busca filtra enquanto você digita.</p>
-          <p class="nota"><code>https://pokeapi.co/api/v2/pokemon?limit=50</code></p>
-        </article>
-        <article class="bloco">
-          <h3 class="titulo-sm">O que dá para fazer</h3>
-          <p>Favoritar espécies, calcular a média de peso e altura dos favoritos na página Ferramentas, enviar uma mensagem pelo formulário de Contato e alternar entre modo claro e escuro.</p>
-        </article>
+        <figure class="prancha" data-tipo="electric">
+          <span class="dado-lg">Nº 0025</span>
+          <div class="prancha__arte">
+            <img
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+              alt="Arte oficial do Pikachu: um roedor amarelo de bochechas vermelhas, orelhas pontudas e cauda em forma de raio."
+              width="475"
+              height="475"
+            />
+          </div>
+          <figcaption class="nota">
+            Fig. Nº 0025 — Pikachu, arte oficial.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="secao" aria-labelledby="titulo-projeto">
+        <h2 class="titulo-lg secao__titulo" id="titulo-projeto">
+          Sobre o projeto
+        </h2>
+        <div class="grade-12 secao__lista secao__lista--tres">
+          <article class="bloco">
+            <h3 class="titulo-sm">O tema</h3>
+            <p>
+              A Pokédex foi pensada como um guia de campo naturalista: cada
+              espécie ganha um número, uma legenda curta e medidas exatas, e
+              quem lê aprende a reconhecer comparando.
+            </p>
+          </article>
+          <article class="bloco">
+            <h3 class="titulo-sm">De onde vêm os dados</h3>
+            <p>
+              A página Explorar faz um GET na PokéAPI e mostra imagem, nome,
+              tipo, peso e altura de 50 espécies. A busca filtra enquanto você
+              digita.
+            </p>
+            <p class="nota">
+              <code>https://pokeapi.co/api/v2/pokemon?limit=50</code>
+            </p>
+          </article>
+          <article class="bloco">
+            <h3 class="titulo-sm">O que dá para fazer</h3>
+            <p>
+              Favoritar espécies, calcular a média de peso e altura dos
+              favoritos na página Ferramentas, enviar uma mensagem pelo
+              formulário de Contato e alternar entre modo claro e escuro.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="secao" aria-labelledby="titulo-grupo">
+        <h2 class="titulo-lg secao__titulo" id="titulo-grupo">Quem fez</h2>
+        <div class="grade-12 secao__lista secao__lista--quatro">
+          <article class="bloco">
+            <p class="rotulo">Integrante 1</p>
+            <h3 class="titulo-sm">Emily Maria Luciani</h3>
+            <p>Base do site, página inicial, modo escuro e README.</p>
+          </article>
+          <article class="bloco">
+            <p class="rotulo">Integrante 2</p>
+            <h3 class="titulo-sm">José Eduardo Bernardi Marques</h3>
+            <p>Página Explorar: consulta à PokéAPI, cartões e busca.</p>
+          </article>
+          <article class="bloco">
+            <p class="rotulo">Integrante 3</p>
+            <h3 class="titulo-sm">Erika Yumi Kanashiro</h3>
+            <p>Favoritos e página Ferramentas.</p>
+          </article>
+          <article class="bloco">
+            <p class="rotulo">Integrante 4</p>
+            <h3 class="titulo-sm">Eduardo Elias Lopes</h3>
+            <p>Formulário de Contato e relatório de debugging.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="conteiner rodape__interno">
+        <p class="nota">
+          Dados: PokéAPI (pokeapi.co). Pokémon e seus nomes são marcas de
+          Nintendo, Creatures Inc. e GAME FREAK. Projeto de fã, sem fins
+          lucrativos.
+        </p>
+        <p class="nota">Projeto final de Front-End, RA 3.</p>
       </div>
-    </section>
-
-    <section class="secao" aria-labelledby="titulo-grupo">
-      <h2 class="titulo-lg secao__titulo" id="titulo-grupo">Quem fez</h2>
-      <div class="grade-12 secao__lista secao__lista--quatro">
-        <article class="bloco">
-          <p class="rotulo">Pessoa 1</p>
-          <h3 class="titulo-sm">Emily Maria Luciani</h3>
-          <p>Base do site, página inicial, modo escuro e README.</p>
-        </article>
-        <article class="bloco">
-          <p class="rotulo">Pessoa 2</p>
-          <h3 class="titulo-sm">José Eduardo Bernardi Marques</h3>
-          <p>Página Explorar: consulta à PokéAPI, cartões e busca.</p>
-        </article>
-        <article class="bloco">
-          <p class="rotulo">Pessoa 3</p>
-          <h3 class="titulo-sm">Erika Yumi Kanashiro</h3>
-          <p>Favoritos e página Ferramentas.</p>
-        </article>
-        <article class="bloco">
-          <p class="rotulo">Pessoa 4</p>
-          <h3 class="titulo-sm">Eduardo Elias Lopes</h3>
-          <p>Formulário de Contato e relatório de debugging.</p>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <footer class="rodape">
-    <div class="conteiner rodape__interno">
-      <p class="nota">Dados: PokéAPI (pokeapi.co). Pokémon e seus nomes são marcas de Nintendo, Creatures Inc. e GAME FREAK. Projeto de fã, sem fins lucrativos.</p>
-      <p class="nota">Projeto final de Front-End, RA 3.</p>
-    </div>
-  </footer>
-</body>
+    </footer>
+  </body>
 </html>
