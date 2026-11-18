@@ -432,13 +432,9 @@ Projeto-Final-Front-End/
 ├── explorar.html
 ├── ferramentas.html
 ├── contato.html
-├── design-system.html
-├── DESIGN.md
 │
 ├── css/
-│   ├── base.css
-│   ├── style.css
-│   └── tokens.css
+│   └── style.cs
 │
 └── scripts/
     ├── script.js
